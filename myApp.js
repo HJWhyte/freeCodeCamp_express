@@ -1,7 +1,9 @@
 let express = require('express');
 let app = express();
 
-// #1
+let bodyParser = require('body-parser');
+
+//#1
 console.log("Hello World"); 
 
 // absolutePath = __dirname + '/views/index.html'
@@ -11,21 +13,24 @@ console.log("Hello World");
 //   res.send('Hello Express')
 // })
 
-// #3
+//#3
 app.get('/', function(req,res) {
   res.sendFile (__dirname + '/views/index.html')
 });
 
-// #4
+//#4
 app.use('/public', (express.static(__dirname + '/public')));
 
- // #7
+ //#7
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path} - ${req.ip}`)
   next()
 });
 
-// #5 & 6
+// #11
+app.use(bodyParser.urlencoded({extended: false}));
+
+// #5&6
 app.get('/json', function(req,res) {
   if (process.env.MESSAGE_STYLE == 'uppercase') {
     res.json({"message" : "HELLO JSON"}) 
@@ -50,17 +55,15 @@ app.get('/:word/echo', function(req,res) {
   res.json({echo: word});
 });
 
-// #10 
+// #12
 app.route('/name').get(function(req,res) {
-    let {first, last} = req.query
-    res.json({ "name": `${first} ${last}`})
-})
-  
-  
-  
-
-
-
+  let {first, last} = req.query
+  res.json({ "name": `${first} ${last}`})
+}).post(
+  function(req,res) {
+  let string = req.body.first +' ' + req.body.last;
+  res.json({ name: string});
+});
 
 
 
